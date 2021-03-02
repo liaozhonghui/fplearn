@@ -52,3 +52,33 @@ var immutableState = Object.freeze({
 1. 参数的预加载方式
 
 ## 写纯函数的工具 2： 组合 compose
+
+1. 组合具有结合律
+
+```js
+var associative = (compose(f, compose(g, h)) = compose(compose(f, g), h));
+```
+
+2. pointfree: 永远不用说出自己的数据
+3. debug 问题：在没有局部调用之前，就组合接收两个参数的函数， 解决方案： 使用 trace 进行跟踪
+4. 组合具有单位律 `compose(id, f)=compose(f,id)=f;`
+
+#### 组合的背景理论
+
+范畴学： 是数学中的一个抽象分支，能够形式化如集合论，类型论，群论，和逻辑学
+处理内容：对象(object),态射(morphism),变化式(transformation)
+范畴：
+
+- 对象的收集
+- 态射的收集
+- 态射的组合
+- identity 这个独特的态射
+
+identity 函数特性
+
+```js
+var id = function (x) {
+  return x;
+};
+compose(id, f) = compose(f, id) = f;
+```
