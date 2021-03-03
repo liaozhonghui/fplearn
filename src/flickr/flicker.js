@@ -42,4 +42,5 @@ require([
     var app = _.compose(Impure.getJSON(renderImages), url);
 
     app('cats');
+
 });

@@ -82,3 +82,75 @@ var id = function (x) {
 };
 compose(id, f) = compose(f, id) = f;
 ```
+
+代码优化知识：JIT
+函数式编程 vs 命令式循环
+
+## Hindley-Milner 类型签名系统
+
+类型签名： 自由定理概念，类型推断，编译时检测
+
+1. 函数类型推导注释： 类型签名推理
+2. 缩小可能性范围
+3. 自由定理
+4. 类型约束：签名可以把类型约束为一个特定的接口(interface) `sort :: Ord a => [a] -> [a]`
+
+自由定理公式 1： `compose(f, head)=compose(head,map(f)); compose(map(f), filter(compose(p,f)) => compose(filter(p), map(f))`
+
+```js
+// id :: a -> a
+var id = function(x) {return x;}
+// map :: (a -> b) -> [a] -> [b]
+var map = curry(function(f, xs) {
+  reutrn xs.map(f);
+})
+// reduce: (b -> a -> b) -> b -> [a] -> b
+var reduce = curry(function(f, x, xs) {
+  return xs.reduce(f, x);
+})
+```
+
+## 容器
+
+如何处理 控制流(control flow), 异常处理(error handling), 异步操作(asynchronous actions), 状态(states), 作用(efforts)
+创建容器： 容器中必须能够装载任意类型的值
+
+```js
+var Container = function (x) {
+  this._value = x;
+};
+Container.of = function (x) {
+  return new Container(x);
+};
+```
+
+创建一个 Functor 函子
+
+```js
+Container.prototype.map = function (f) {
+  return Container.of(f(this._value));
+};
+```
+
+## Functor 函子
+
+概念：Functor 是实现了 map 函数并且遵守一些特定规则的容器类型
+使用 of 和 map，让容器自己去运行函数能给我们带来什么好处？ 答：抽象
+
+```js
+// Maybe函子
+var Maybe = function (x) {
+  this._value = x;
+};
+Maybe.of = function (x) {
+  return new Maybe(x);
+};
+Maybe.prototype.isNothing = function () {
+  return this._value == null;
+};
+Maybe.prototype.map = function (f) {
+  return this.isNothing() ? Maybe.of(null) : Maybe.of(f(this._value));
+};
+```
+
+Maybe 处理 null 值之后，直接不执行后序的逻辑
