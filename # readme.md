@@ -268,7 +268,7 @@ getAge(moment(), { birthdate: "aaaa" });
 
 异步处理：`Promise` 也是一种函子, 其中`.then` 对应`.map`, `Promise.resolve` 对应 `Functor.of` 操作
 
-```jsG
+```js
 const _ = require("ramda");
 const { split, head, curry } = _;
 const fs = require("fs");

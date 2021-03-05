@@ -41,7 +41,9 @@ require([
     const mediaToImg = _.compose(img, mediaUrl);
     const images = _.compose(_.map(mediaToImg), _.prop('items'));
     const renderImages = _.compose(Impure.setHtml('body'), images);
-
+    // Impure.getJSON(renderImages) = (url) => {
+    //     $.getJSON(url, callback);
+    // }
     const app = _.compose(Impure.getJSON(renderImages), url);
 
     app('cats');
