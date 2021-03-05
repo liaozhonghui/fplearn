@@ -1,1 +1,0 @@
-// add functional programming src code logic

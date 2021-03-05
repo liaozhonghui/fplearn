@@ -5,16 +5,18 @@ requirejs.config({
     }
 });
 
+// 使用require.js进行加载js脚本
 require([
     'ramda',
     'jquery'
 ], function (_, $) {
-    var trace = _.curry(function (tag, x) {
+    // 栈打印
+    const trace = _.curry(function (tag, x) {
         console.log(tag, x);
         return x;
     });
-    // app goes here
-    var Impure = {
+    // 不纯的函数处理
+    const Impure = {
         getJSON: _.curry(function (callback, url) {
             $.getJSON(url, callback);
         }),
@@ -22,24 +24,25 @@ require([
             $(sel).html(html);
         })
     };
-    var img = function (url) {
+    const img = function (url) {
         return $('<img />', { src: url });
     };
     // Pure
 
     // url:: String-> URL
-    var url = function (term) {
+    const url = function (term) {
         return 'https://api.flickr.com/services/feeds/photos_public.gne?tags=' + term + '&format=json&jsoncallback=?';
     };
 
-    // var app = _.compose(Impure.getJSON(trace('response')), url);
+    // const app = _.compose(Impure.getJSON(trace('response')), url);
 
+    // 声明式代码
+    const mediaUrl = _.compose(_.prop('m'), _.prop('media'));
+    const mediaToImg = _.compose(img, mediaUrl);
+    const images = _.compose(_.map(mediaToImg), _.prop('items'));
+    const renderImages = _.compose(Impure.setHtml('body'), images);
 
-    var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
-    var mediaToImg = _.compose(img, mediaUrl);
-    var images = _.compose(_.map(mediaToImg), _.prop('items'));
-    var renderImages = _.compose(Impure.setHtml('body'), images);
-    var app = _.compose(Impure.getJSON(renderImages), url);
+    const app = _.compose(Impure.getJSON(renderImages), url);
 
     app('cats');
 
