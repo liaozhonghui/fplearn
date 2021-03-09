@@ -43,5 +43,5 @@ var res = Task.of(3).map(function (three) { return three + 1; }).map(trace);
 console.log('res:', res.run().promise());
 
 setTimeout(function () {
-
+  process.exit(0);
 }, 3000);
