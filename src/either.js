@@ -39,3 +39,5 @@ console.log(getAge(moment(), { birthdate: "2005-12-12" }));
 // Right(9)
 console.log(getAge(moment(), { birthdate: "aaaa" }));
 // Left("Birth date could not be parsed")
+
+module.exports = { Left, Right };
