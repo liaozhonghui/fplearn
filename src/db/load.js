@@ -15,6 +15,7 @@ const trace = function (v) {
 const map = curry(function (f, container) {
   return container.map(f);
 });
+const join = function (mma) { return mma.join(); };
 const filePath = function (name) {
   return path.resolve(__dirname, name);
 };
@@ -81,7 +82,7 @@ var safeProp = curry(function (x, obj) {
   return new Maybe(obj[x]);
 });
 var safeHead = safeProp(0);
-var firstAddressStreet = compose(map(map(safeProp('street'))), map(safeHead), safeProp('addresses'));
+var firstAddressStreet = compose(join, map(safeProp('street')), join, map(safeHead), safeProp('addresses'));
 var res = firstAddressStreet(
   { addresses: [{ street: { name: 'Mulburry', number: 8402 }, postcode: "WC2N" }] }
 );
