@@ -2,13 +2,12 @@ const path = require('path');
 const fs = require('fs');
 const { task, of } = require('folktale/concurrency/task');
 const { MongoClient } = require('mongodb');
-const { compose, curry, identity } = require('ramda');
+const { compose, curry, identity, toUpper, concat, flip } = require('ramda');
 const assert = require('assert');
 
 const CONTAINER = require('../container');
-const { concat } = require('lodash');
-const { io, maybe, either } = CONTAINER;
-const { Right, Left } = either;
+const { IO, Maybe, Either } = CONTAINER;
+const { Right, Left } = Either;
 const trace = function (v) {
   console.log('trace:', v);
   return v;
@@ -60,3 +59,31 @@ getConfigTask('./config.json')
 //     console.log('res:', res);
 //   });
 
+var nested = of([Right.of('pillows'), Left.of('no sleep for you')]);
+const t = nested.map(trace).map(map(map(toUpper))).map(trace);
+// const t = map(map(trace), map(map(toUpper)), map(trace), nested);
+t.run().promise();
+
+// functor 函子组合
+var Compose = function (f_g_x) {
+  this.getCompose = f_g_x;
+};
+
+Compose.prototype.map = function (f) {
+  return new Compose(map(map(f), this.getCompose));
+};
+var tmd = of(Maybe.of("Rock over london"));
+var ctmd = new Compose(tmd);
+ctmd = map(trace, map(flip(concat)(", rock on, Chicago"), ctmd));
+ctmd.getCompose.run().promise();
+
+var safeProp = curry(function (x, obj) {
+  return new Maybe(obj[x]);
+});
+var safeHead = safeProp(0);
+var firstAddressStreet = compose(map(map(safeProp('street'))), map(safeHead), safeProp('addresses'));
+var res = firstAddressStreet(
+  { addresses: [{ street: { name: 'Mulburry', number: 8402 }, postcode: "WC2N" }] }
+);
+
+console.log('res:', res);

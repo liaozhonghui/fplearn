@@ -1,6 +1,6 @@
 module.exports = {
-  io: require('./io'),
-  container: require('./container'),
-  maybe: require('./maybe'),
-  either: require('./either'),
-}
+  IO: require('./io'),
+  Container: require('./container'),
+  Maybe: require('./maybe'),
+  Either: require('./either'),
+};

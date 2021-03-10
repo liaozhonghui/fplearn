@@ -9,7 +9,7 @@ Left.of = function (x) {
 Left.prototype.map = function (f) {
   return this;
 };
-var Right = function (x) {
+const Right = function (x) {
   this.__value = x;
 };
 Right.of = function (x) {
@@ -17,6 +17,16 @@ Right.of = function (x) {
 };
 Right.prototype.map = function (f) {
   return Right.of(f(this.__value));
+};
+
+const Either = function (x) {
+  this.__value = x;
+};
+Either.of = function (x) {
+  return new Either(x);
+};
+Either.prototype.map = function (f) {
+  return f(this.__value) ? Right.of(f(this.__value)) : Left.of(this._value);
 };
 
 function test() {
@@ -41,4 +51,4 @@ function test() {
   // Left("Birth date could not be parsed")
 }
 
-module.exports = { Left, Right };
+module.exports = { Left, Right, Either };
